@@ -14,10 +14,10 @@
 
 This project has been successfully tested with the following specifications:
 
--Ubuntu 18.04.4 (Bionic Beaver)
--Python 3.6.9 (there are no third-party packages, the Python server program only uses modules from the Standard Library)
--gcc (Install via the command "sudo apt-get install gcc", it is recommended to update/upgrade apt first)
--make (Install via the command "sudo apt-get install make", it is recommended to update/upgrade apt first)
+>Ubuntu 18.04.4 (Bionic Beaver)
+>Python 3.6.9 (there are no third-party packages, the Python server program only uses modules from the Standard Library)
+>gcc (Install via the command "sudo apt-get install gcc", it is recommended to update/upgrade apt first)
+>make (Install via the command "sudo apt-get install make", it is recommended to update/upgrade apt first)
 
 ## Tutorial
 
