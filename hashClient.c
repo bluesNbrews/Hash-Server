@@ -79,4 +79,21 @@ int main(int argc , char *argv[]){
 
 void sendFile(FILE *filePointer, int mySocket){
 
+    int numBytes; 
+    char line[LINE_SIZE] = {0}; 
+   
+   //Read and send 4096 bytes of the file at a time to the server
+    while ((numBytes = fread(line, sizeof(char), LINE_SIZE, filePointer)) > 0){
+        total = total + numBytes;
+        if (numBytes != LINE_SIZE && ferror(filePointer)){
+            perror("The file can't be read.\n");
+            exit(1);
+        }   
+        if (send(mySocket, line, numBytes, 0) == -1){
+            perror("The file can't be sent.\n");
+            exit(1);
+        }
+        //Reset the buffer each time for retransmission
+        memset(line, 0, LINE_SIZE);
+    }
 }
