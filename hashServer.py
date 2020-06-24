@@ -1,3 +1,11 @@
+import argparse
+import hashlib
+import socket
+import sys
+
+HOST = "127.0.0.1"
+BUFFER_SIZE = 4096
+
 def checkArgs(args=None):
 	pass
 
@@ -24,7 +32,10 @@ def md5(content):
 	pass
 
 def main():
-	pass
+	#Get the port number 
+    port = int(checkArgs(sys.argv[1:]))
+    if port < 0 or port > 65535:
+        sys.exit("Please enter a valid port number (0-65535).")
 
 if __name__ == "__main__":
     main()
