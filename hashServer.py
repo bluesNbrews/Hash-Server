@@ -7,10 +7,31 @@ HOST = "127.0.0.1"
 BUFFER_SIZE = 4096
 
 def checkArgs(args=None):
-	pass
+	'''Process command line arguments for the port number'''
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-p', '--port', help='Optional port number', default='2345')
+    results = parser.parse_args(args)
+
+    return results.port
 
 def readFile(connection, fileSize, fileName):
-	pass
+	'''Receive the file from the client'''
+    totalBytesRead = 0
+
+    f = open(fileName, "wb")
+    print(f"Receiving {fileName}...")
+
+    for _ in range(fileSize):
+        #Read 4096 bytes at a time 
+        bytes_read = connection.recv(BUFFER_SIZE)
+        totalBytesRead += len(bytes_read)
+        #Write the bytes to a file
+        f.write(bytes_read)
+        #When the amount of bytes received is the same as the file size, file transmission is done
+        if totalBytesRead == fileSize:
+            break
+    
+    f.close()
 
 def hashFile(fileName, hashAlgo):
 	pass
