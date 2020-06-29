@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import argparse
 import hashlib
 import socket
@@ -34,23 +36,58 @@ def readFile(connection, fileSize, fileName):
     f.close()
 
 def hashFile(fileName, hashAlgo):
-	pass
+    '''Hash the specified file with the specified hash algorithm'''
+	#Open the file that was written above and read contents
+    file = open(fileName, "rb")
+    content = file.read()  
 
-#Hash the file (SHA1)
+    #Hash the file according to the user input
+    if hashAlgo == "md5" or hashAlgo == "MD5":
+        finalHash = md5(content)
+    elif hashAlgo == "sha1" or hashAlgo == "SHA1":
+        finalHash = sha1(content)
+    elif hashAlgo == "sha256" or hashAlgo == "SHA256":
+        finalHash = sha256(content)
+    elif hashAlgo == "sha512" or hashAlgo == "SHA512":
+        finalHash = sha512(content)
+
+    #Close the file
+    file.close()
+
+    #Return the hash value
+    return finalHash
+
 def sha1(content):
-	pass
+	'''Hash the file (SHA1)'''
+    sha1_hash = hashlib.sha1()
+    sha1_hash.update(content)
+    digest = sha1_hash.hexdigest()
 
-#Hash the file (SHA256)
+    return digest
+
 def sha256(content):
-	pass
+    '''Hash the file (SHA256)'''
+    sha256_hash = hashlib.sha256()
+    sha256_hash.update(content)
+    digest = sha256_hash.hexdigest()
 
-#Hash the file (SHA512)
+    return digest
+
 def sha512(content):
-	pass
+    '''Hash the file (SHA512)'''
+    sha512_hash = hashlib.sha512()
+    sha512_hash.update(content)
+    digest = sha512_hash.hexdigest()
 
-#Hash the file (MD5)
+    return digest
+
 def md5(content):
-	pass
+    '''#Hash the file (MD5)'''
+    md5_hash = hashlib.md5()
+    md5_hash.update(content)
+    digest = md5_hash.hexdigest()
+
+    return digest
 
 def main():
 	#Get the port number 
