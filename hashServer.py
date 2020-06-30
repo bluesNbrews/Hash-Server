@@ -95,5 +95,19 @@ def main():
     if port < 0 or port > 65535:
         sys.exit("Please enter a valid port number (0-65535).")
 
+    #Create socket, bind, listen and accept connection from client
+    s = socket.socket()
+    s.bind((HOST, port))
+    print("Listening...")
+    s.listen()
+    connection, address = s.accept()
+
+    #Display client connection info (IP and port)
+    print(f"Connected by {address[0]}:{address[1]}")
+
+    #Close the client and server sockets
+    connection.close()
+    s.close()
+
 if __name__ == "__main__":
     main()
