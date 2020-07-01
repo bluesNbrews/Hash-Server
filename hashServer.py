@@ -105,6 +105,38 @@ def main():
     #Display client connection info (IP and port)
     print(f"Connected by {address[0]}:{address[1]}")
 
+    #Receive the filename, hashing algorithm and filesize and clean for use
+    hashAlgo = connection.recv(BUFFER_SIZE).decode('UTF-8')
+    hashAlgo = hashAlgo.rstrip('\x00')
+
+    #Receive files, hash and send back to the client
+    while True: 
+        #Receive the the file size and file name
+        try:
+            fileSize = connection.recv(BUFFER_SIZE).decode('UTF-8')
+            fileName = connection.recv(BUFFER_SIZE).decode('UTF-8')
+        except:
+            break
+        #Clean the file size and file name for use
+        #If file size and file name are not received, transmission from client is done
+        try:
+            fileSize = int(fileSize.rstrip('\x00'))
+            fileName = fileName.rstrip('\x00')
+        except:
+            break
+
+        #Read the file
+        readFile(connection, fileSize, fileName)
+
+        #Hash the file
+        finalHash = hashFile(fileName, hashAlgo)
+
+        #Print to stdout
+        print(f"The {hashAlgo} hash of {fileName} is {finalHash}")
+
+        #Send back to the client
+        connection.send(finalHash.encode())
+
     #Close the client and server sockets
     connection.close()
     s.close()
