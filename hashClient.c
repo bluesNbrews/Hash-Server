@@ -74,6 +74,38 @@ int main(int argc , char *argv[]){
         return 1;
     }
 
+    printf("Connecting to %s:%lu\n", ipAddress, portNum);
+
+    //Create socket
+    mySocket = socket(AF_INET , SOCK_STREAM , 0);
+    if (mySocket == -1){
+        perror("The socket could not be created.\n");
+    }
+        
+    //Configure the IP address, port and protocol (TCP)
+    server.sin_addr.s_addr = inet_addr(ipAddress);
+    server.sin_family = AF_INET;
+    server.sin_port = htons(portNum);
+
+    //Connect to the hashing server
+    if (connect(mySocket, (struct sockaddr *)&server , sizeof(server)) < 0){
+        perror("There is an error with the connection.\n");
+        return 1;
+    }
+
+    //Copy the hashing algorithm into the buffer
+    strncpy(sendBuffer, hashingAlgorithm, strlen(hashingAlgorithm));
+
+    //Send the hashing algorithm and reset the buffer
+    if (send(mySocket, sendBuffer, BUFFER_SIZE, 0) == -1){
+        perror("The hashing algorithm can't be sent.\n");
+        return 1;
+    }
+    memset(sendBuffer, 0, BUFFER_SIZE);
+
+    //Close the file and the socket connection
+    close(mySocket);
+
 	return 0;
 }
 
