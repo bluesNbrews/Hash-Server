@@ -103,6 +103,63 @@ int main(int argc , char *argv[]){
     }
     memset(sendBuffer, 0, BUFFER_SIZE);
 
+     //Iterate through the filepath argument(s)
+    //Send file size(s), file name(s) and the file(s)
+    for (index = optind + 2; index < argc; index++){
+        filePath = argv[index];
+
+        //Make sure the file path is not null
+        if (filePath == NULL){
+            puts("Something is wrong with the file path.\n");
+            return 1;
+        }
+
+        //Open the file
+        filePointer = fopen(filePath, "rb");
+        if (filePointer == NULL){
+            perror("The file can't be opened.\n");
+            return 1;
+        }
+
+        //Get the file size
+        fseek(filePointer, 0L, SEEK_END);
+        int myFileSize = ftell(filePointer);
+        fseek(filePointer, 0L, SEEK_SET);
+
+        //Copy the file size into the buffer
+        sprintf(sendBuffer, "%d", myFileSize);
+
+        //Send the file size and reset the buffer
+        if (send(mySocket, sendBuffer, BUFFER_SIZE, 0) == -1){
+            perror("The file size can't be sent.\n");
+            return 1;
+        }
+        memset(sendBuffer, 0, BUFFER_SIZE);
+
+        //Cut the filename from the file path and copy into the buffer
+        fileName = basename(filePath);
+        strncpy(sendBuffer, fileName, strlen(fileName));
+    
+        //Send the file name and reset the buffer
+        if (send(mySocket, sendBuffer, BUFFER_SIZE, 0) == -1){
+            perror("The file name can't be sent.\n");
+            return 1;
+        }
+        memset(sendBuffer, 0, BUFFER_SIZE);
+
+        //Send the file
+        sendFile(filePointer, mySocket);
+    
+        //Receive the hash back from the server and print to stdout
+        numBytesRecv = recv(mySocket, recvBuffer, BUFFER_SIZE, 0);
+        if (numBytesRecv < 0){
+          perror("The file can't be received.\n");
+          return 1;
+        }
+        printf("%s %s\n", recvBuffer, fileName);
+        fclose(filePointer);        
+    }
+
     //Close the file and the socket connection
     close(mySocket);
 
